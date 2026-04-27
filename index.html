@@ -3,375 +3,666 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tony's Barbershop | Brooklyn, NY</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <title>Carimoadulture — Web Designer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --gold: #C9A84C;
-      --dark: #0f0f0f;
-      --gray: #1a1a1a;
-      --light: #f5f0e8;
-      --text: #cccccc;
+      --bg: #0a0a08;
+      --surface: #111110;
+      --card: #161614;
+      --accent: #e8ff47;
+      --accent2: #ff6b35;
+      --text: #f0ede6;
+      --muted: #6b6960;
+      --border: #252521;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--dark);
+      background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
     }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      background: rgba(15,15,15,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(201,168,76,0.2);
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 18px 5%;
+    /* Custom cursor */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+      mix-blend-mode: difference;
     }
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px; color: var(--gold); letter-spacing: 1px;
-    }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a {
-      color: #aaa; text-decoration: none; font-size: 13px;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      transition: color 0.3s;
-    }
-    .nav-links a:hover { color: var(--gold); }
+    .cursor.expand { width: 40px; height: 40px; transform: translate(-14px, -14px); }
 
-    /* ── HERO ── */
-    .hero {
-      height: 100vh;
-      background: linear-gradient(135deg, #0f0f0f 0%, #1a1207 50%, #0f0f0f 100%);
-      display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 0 20px;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
+    /* Grain overlay */
+    body::before {
       content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at center, rgba(201,168,76,0.08) 0%, transparent 70%);
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
     }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(10,10,8,0.95), transparent);
+    }
+    .nav-logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(120px, 20vw, 280px);
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(232,255,71,0.06);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.02em;
+      animation: drift 20s ease-in-out infinite alternate;
+    }
+    @keyframes drift {
+      from { transform: translate(-50%, -50%) rotate(-2deg); }
+      to   { transform: translate(-50%, -52%) rotate(2deg); }
+    }
+
     .hero-tag {
-      display: inline-block;
-      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--gold); border: 1px solid rgba(201,168,76,0.4);
-      padding: 6px 18px; border-radius: 20px; margin-bottom: 24px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
     }
+
     .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(42px, 8vw, 90px);
-      color: #fff; line-height: 1.05;
-      margin-bottom: 20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
     }
-    .hero h1 span { color: var(--gold); }
-    .hero p {
-      font-size: 17px; color: #888; max-width: 480px;
-      margin: 0 auto 40px;
+    .hero h1 span { color: var(--accent); }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      max-width: 480px;
+      margin-top: 28px;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
     }
-    .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .btn {
-      padding: 14px 32px; border-radius: 4px; font-size: 13px;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      text-decoration: none; font-weight: 600; transition: all 0.3s;
-      cursor: pointer; border: none;
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      margin-top: 48px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
     }
+
     .btn-primary {
-      background: var(--gold); color: #000;
+      background: var(--accent);
+      color: #000;
+      padding: 14px 32px;
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      font-weight: 700;
+      display: inline-block;
+      transition: transform 0.2s, background 0.2s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     }
-    .btn-primary:hover { background: #e0b85a; transform: translateY(-2px); }
-    .btn-outline {
-      background: transparent; color: var(--gold);
-      border: 1px solid var(--gold);
-    }
-    .btn-outline:hover { background: rgba(201,168,76,0.1); transform: translateY(-2px); }
+    .btn-primary:hover { transform: translate(-2px, -2px); background: #fff; }
 
-    /* ── SECTION BASE ── */
-    section { padding: 100px 5%; }
-    .section-tag {
-      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 12px; display: block;
+    .btn-secondary {
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 14px 32px;
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, color 0.2s;
     }
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(30px, 4vw, 48px); color: #fff;
-      margin-bottom: 16px; line-height: 1.1;
+    .btn-secondary:hover { border-color: var(--text); color: var(--text); }
+
+    .hero-scroll {
+      position: absolute;
+      right: 40px;
+      bottom: 80px;
+      writing-mode: vertical-rl;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards;
     }
-    .section-sub { color: #777; max-width: 520px; margin-bottom: 60px; font-size: 16px; }
-    .divider {
-      width: 60px; height: 2px; background: var(--gold);
-      margin: 20px 0 50px;
+    .hero-scroll::after {
+      content: '';
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.3; transform: scaleY(0.5); }
     }
 
-    /* ── SERVICES ── */
-    #services { background: var(--gray); }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2px;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .service-card {
-      background: #111; padding: 40px 32px;
-      border-top: 2px solid transparent;
-      transition: all 0.3s;
-    }
-    .service-card:hover { border-top-color: var(--gold); background: #161616; }
-    .service-icon { font-size: 32px; margin-bottom: 20px; }
-    .service-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px; color: #fff; margin-bottom: 8px;
-    }
-    .service-desc { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.6; }
-    .service-price { font-size: 26px; color: var(--gold); font-weight: 600; }
 
-    /* ── ABOUT ── */
-    #about {
+    /* MARQUEE */
+    .marquee-section {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      animation: marquee 18s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 0 40px;
+      flex-shrink: 0;
+    }
+    .marquee-item span { color: var(--accent); }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* SECTION SHARED */
+    section { padding: 100px 40px; }
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .section-label::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    /* ABOUT */
+    .about { background: var(--surface); }
+    .about-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: center;
+      gap: 80px;
+      align-items: start;
     }
-    .about-img {
-      background: linear-gradient(135deg, #1a1207, #2a1f08);
-      border-radius: 4px; height: 420px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 80px; border: 1px solid rgba(201,168,76,0.15);
+    .about h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 6vw, 80px);
+      line-height: 0.95;
+      letter-spacing: -0.01em;
     }
-    .about-stats {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 24px; margin-top: 40px;
+    .about h2 em { color: var(--accent); font-style: normal; }
+    .about-text {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #b8b5ae;
     }
-    .stat { border-left: 2px solid var(--gold); padding-left: 16px; }
-    .stat-number {
-      font-family: 'Playfair Display', serif;
-      font-size: 36px; color: var(--gold); display: block;
-    }
-    .stat-label { font-size: 13px; color: #666; }
-
-    /* ── TESTIMONIALS ── */
-    #testimonials { background: var(--gray); text-align: center; }
-    .testimonials-grid {
+    .about-text p + p { margin-top: 20px; }
+    .skills-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px; max-width: 900px; margin: 0 auto;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 40px;
     }
-    .testimonial {
-      background: #111; padding: 36px 28px;
-      border-radius: 4px; border: 1px solid rgba(255,255,255,0.05);
-      text-align: left; transition: border-color 0.3s;
+    .skill-chip {
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      transition: border-color 0.2s, color 0.2s;
     }
-    .testimonial:hover { border-color: rgba(201,168,76,0.3); }
-    .stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; letter-spacing: 2px; }
-    .testimonial p { font-size: 15px; color: #888; font-style: italic; margin-bottom: 20px; line-height: 1.7; }
-    .client { font-size: 13px; color: var(--gold); font-weight: 600; }
+    .skill-chip:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ── BOOKING ── */
-    #booking { text-align: center; }
-    .booking-box {
-      background: var(--gray);
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 8px; padding: 60px 40px;
-      max-width: 560px; margin: 0 auto;
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2px;
+      margin-top: 0;
     }
-    .booking-box h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px; color: #fff; margin-bottom: 12px;
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+      cursor: none;
     }
-    .booking-box p { color: #777; margin-bottom: 32px; }
-    .hours { margin-bottom: 32px; }
-    .hours-row {
-      display: flex; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid #222;
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(232,255,71,0.03), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .project-card:hover { border-color: rgba(232,255,71,0.3); }
+    .project-card:hover::before { opacity: 1; }
+
+    .project-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      margin-bottom: 32px;
+    }
+    .project-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+    .project-card:hover h3 { color: var(--accent); }
+    .project-desc {
       font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 32px;
     }
-    .hours-row span:first-child { color: #888; }
-    .hours-row span:last-child { color: #fff; }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      border: 1px solid rgba(232,255,71,0.2);
+      padding: 4px 10px;
+      letter-spacing: 0.1em;
+    }
+    .project-link {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.05em;
+      transition: gap 0.2s, color 0.2s;
+    }
+    .project-link:hover { gap: 18px; color: var(--accent); }
+    .project-link::after { content: '→'; font-size: 16px; }
 
-    /* ── FOOTER ── */
+    .project-featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 300px;
+    }
+    .project-featured .project-visual {
+      background: linear-gradient(135deg, #1a1a16, #0f1a08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      color: rgba(232,255,71,0.15);
+      letter-spacing: -0.04em;
+      border-left: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .project-featured .project-visual::after {
+      content: '✂';
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.06;
+      animation: rotateSlow 20s linear infinite;
+    }
+    @keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+    /* STATS */
+    .stats { background: var(--accent); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-left: 1px solid rgba(0,0,0,0.1);
+    }
+    .stat {
+      padding: 60px 40px;
+      border-right: 1px solid rgba(0,0,0,0.1);
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      color: #000;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: rgba(0,0,0,0.5);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* CONTACT */
+    .contact { background: var(--surface); text-align: center; }
+    .contact h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(60px, 10vw, 130px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+    .contact h2 span { color: var(--accent); }
+    .contact p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+    .contact-email {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 20px 40px;
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-email:hover { border-color: var(--accent); background: rgba(232,255,71,0.05); color: var(--accent); }
+
+    /* FOOTER */
     footer {
-      background: #080808;
-      border-top: 1px solid rgba(201,168,76,0.1);
-      text-align: center; padding: 40px 5%;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .footer-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px; color: var(--gold); margin-bottom: 12px;
+    footer p {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
     }
-    footer p { font-size: 13px; color: #444; }
-    .footer-links {
-      display: flex; gap: 24px; justify-content: center;
-      margin: 20px 0; list-style: none;
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
     }
-    .footer-links a { color: #555; text-decoration: none; font-size: 13px; transition: color 0.3s; }
-    .footer-links a:hover { color: var(--gold); }
+    .footer-links a:hover { color: var(--accent); }
 
-    /* ── RESPONSIVE ── */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
-      #about { grid-template-columns: 1fr; gap: 40px; }
-      .about-img { height: 240px; font-size: 60px; }
+      nav { padding: 20px 24px; }
       .nav-links { display: none; }
-      section { padding: 70px 6%; }
+      .hero { padding: 0 24px 60px; }
+      .hero-scroll { display: none; }
+      section { padding: 70px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .project-featured { grid-template-columns: 1fr; }
+      .project-featured .project-visual { display: none; }
+      .stats-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
     }
   </style>
 </head>
 <body>
 
+  <div class="cursor" id="cursor"></div>
+
   <!-- NAV -->
   <nav>
-    <div class="logo">✂ Tony's</div>
-    <ul class="nav-links">
-      <li><a href="#services">Services</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#testimonials">Reviews</a></li>
-      <li><a href="#booking">Book Now</a></li>
-    </ul>
-    <a href="#booking" class="btn btn-primary" style="padding:10px 22px;font-size:12px;">Book Now</a>
+    <a href="#" class="nav-logo">CARIMOADULTURE</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#projects">Work</a>
+      <a href="#contact">Contact</a>
+    </div>
   </nav>
 
   <!-- HERO -->
-  <section class="hero" id="home">
-    <div>
-      <div class="hero-tag">Est. 2008 · Brooklyn, New York</div>
-      <h1>Where Every Cut<br>Tells a <span>Story</span></h1>
-      <p>Premium barbershop experience in the heart of Brooklyn. Walk in fresh, walk out legendary.</p>
-      <div class="btn-group">
-        <a href="#booking" class="btn btn-primary">Book Appointment</a>
-        <a href="#services" class="btn btn-outline">View Services</a>
-      </div>
+  <section class="hero">
+    <div class="hero-bg-text">DESIGN</div>
+    <p class="hero-tag">Web Designer & Developer</p>
+    <h1>CRAFTING<br/><span>DIGITAL</span><br/>WORLDS</h1>
+    <p class="hero-sub">Clean code. Bold design. Websites that leave a lasting impression and actually work for your business.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">View My Work</a>
+      <a href="#contact" class="btn-secondary">Let's Talk</a>
     </div>
+    <div class="hero-scroll">Scroll</div>
   </section>
 
-  <!-- SERVICES -->
-  <section id="services">
-    <span class="section-tag">What We Offer</span>
-    <h2 class="section-title">Our Services</h2>
-    <div class="divider"></div>
-    <div class="services-grid">
-      <div class="service-card">
-        <div class="service-icon">✂️</div>
-        <div class="service-name">Classic Haircut</div>
-        <div class="service-desc">Precision cut tailored to your style. Includes wash, cut and style.</div>
-        <div class="service-price">$35</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🪒</div>
-        <div class="service-name">Straight Razor Shave</div>
-        <div class="service-desc">Traditional hot towel straight razor shave for the smoothest finish.</div>
-        <div class="service-price">$30</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">💈</div>
-        <div class="service-name">Cut + Shave Combo</div>
-        <div class="service-desc">The full experience. Haircut and straight razor shave combined.</div>
-        <div class="service-price">$55</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">👦</div>
-        <div class="service-name">Kids Cut (under 12)</div>
-        <div class="service-desc">Patient and friendly cuts for the little ones. Fun guaranteed.</div>
-        <div class="service-price">$20</div>
-      </div>
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <span class="marquee-item">HTML <span>✦</span></span>
+      <span class="marquee-item">CSS <span>✦</span></span>
+      <span class="marquee-item">JavaScript <span>✦</span></span>
+      <span class="marquee-item">Web Design <span>✦</span></span>
+      <span class="marquee-item">Responsive Layout <span>✦</span></span>
+      <span class="marquee-item">UI / UX <span>✦</span></span>
+      <span class="marquee-item">HTML <span>✦</span></span>
+      <span class="marquee-item">CSS <span>✦</span></span>
+      <span class="marquee-item">JavaScript <span>✦</span></span>
+      <span class="marquee-item">Web Design <span>✦</span></span>
+      <span class="marquee-item">Responsive Layout <span>✦</span></span>
+      <span class="marquee-item">UI / UX <span>✦</span></span>
     </div>
-  </section>
+  </div>
 
   <!-- ABOUT -->
-  <section id="about">
-    <div class="about-img">💈</div>
-    <div>
-      <span class="section-tag">Our Story</span>
-      <h2 class="section-title">15 Years of<br>Craft & Community</h2>
-      <div class="divider"></div>
-      <p style="color:#777; line-height:1.8; margin-bottom:20px;">
-        Tony's Barbershop has been the go-to spot in Brooklyn since 2008. Started as a one-chair shop, we've grown into a community institution — where neighbors become friends and every client leaves looking their best.
-      </p>
-      <p style="color:#777; line-height:1.8;">
-        Our barbers average 10+ years of experience. We believe a great haircut isn't just about the hair — it's about the conversation, the confidence, and the craft.
-      </p>
-      <div class="about-stats">
-        <div class="stat">
-          <span class="stat-number">15+</span>
-          <span class="stat-label">Years in Business</span>
+  <section class="about" id="about">
+    <div class="section-label">About Me</div>
+    <div class="about-grid">
+      <div>
+        <h2>I BUILD SITES THAT <em>STAND OUT</em></h2>
+      </div>
+      <div>
+        <div class="about-text">
+          <p>I'm Carimoadulture — a web designer who believes every business deserves a digital presence that looks as good as it works. I combine clean code with bold visual thinking.</p>
+          <p>From barbershops to boutiques, I create websites that attract customers, build trust, and get results.</p>
         </div>
-        <div class="stat">
-          <span class="stat-number">8K+</span>
-          <span class="stat-label">Happy Clients</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">4</span>
-          <span class="stat-label">Master Barbers</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">4.9★</span>
-          <span class="stat-label">Google Rating</span>
+        <div class="skills-grid">
+          <div class="skill-chip">HTML5</div>
+          <div class="skill-chip">CSS3</div>
+          <div class="skill-chip">JavaScript</div>
+          <div class="skill-chip">Responsive Design</div>
+          <div class="skill-chip">UI Design</div>
+          <div class="skill-chip">Web Animation</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section id="testimonials">
-    <span class="section-tag">Client Reviews</span>
-    <h2 class="section-title">What People Say</h2>
-    <div class="divider" style="margin: 20px auto 50px;"></div>
-    <div class="testimonials-grid">
-      <div class="testimonial">
-        <div class="stars">★★★★★</div>
-        <p>"Best barbershop in Brooklyn, no contest. Tony knows exactly what I want every single time. Been coming here for 6 years."</p>
-        <span class="client">— Marcus J., Williamsburg</span>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">Selected Work</div>
+    <div class="projects-grid">
+
+      <!-- Featured: Tony's Barbershop -->
+      <div class="project-card project-featured">
+        <div style="padding: 40px;">
+          <div class="project-number">001 — FEATURED</div>
+          <h3>TONY'S BARBERSHOP</h3>
+          <p class="project-desc">A full website for a local barbershop — built to attract walk-ins, showcase services, and make booking effortless. Clean layout, strong typography, mobile-first.</p>
+          <div class="project-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">Local Business</span>
+            <span class="tag">Mobile-First</span>
+          </div>
+          <a href="tonys_barbershop.html" class="project-link">View Project</a>
+        </div>
+        <div class="project-visual">CUTS</div>
       </div>
-      <div class="testimonial">
-        <div class="stars">★★★★★</div>
-        <p>"The hot towel shave is an experience. Walked out feeling like a new man. The vibe in this place is unmatched."</p>
-        <span class="client">— Derek R., Crown Heights</span>
+
+      <!-- Placeholder card 2 -->
+      <div class="project-card">
+        <div class="project-number">002</div>
+        <h3>NEXT PROJECT</h3>
+        <p class="project-desc">Your next client's website goes here. Every great portfolio grows one project at a time.</p>
+        <div class="project-tags">
+          <span class="tag">Coming Soon</span>
+        </div>
+        <a href="#contact" class="project-link">Start a Project</a>
       </div>
-      <div class="testimonial">
-        <div class="stars">★★★★★</div>
-        <p>"Brought my son here for his first real haircut. The barber was so patient and kind. We're customers for life."</p>
-        <span class="client">— Sarah M., Park Slope</span>
+
+      <!-- Placeholder card 3 -->
+      <div class="project-card">
+        <div class="project-number">003</div>
+        <h3>YOUR SITE HERE</h3>
+        <p class="project-desc">Ready to work together? Let's build something that gets your business noticed online.</p>
+        <div class="project-tags">
+          <span class="tag">Let's Build</span>
+        </div>
+        <a href="#contact" class="project-link">Get In Touch</a>
       </div>
+
     </div>
   </section>
 
-  <!-- BOOKING -->
-  <section id="booking">
-    <div class="booking-box">
-      <h3>Ready to Look Fresh?</h3>
-      <p>Book your appointment online or just walk in. We're always happy to see you.</p>
-      <div class="hours">
-        <div class="hours-row"><span>Monday – Friday</span><span>9:00 AM – 8:00 PM</span></div>
-        <div class="hours-row"><span>Saturday</span><span>8:00 AM – 6:00 PM</span></div>
-        <div class="hours-row"><span>Sunday</span><span>10:00 AM – 4:00 PM</span></div>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-num">1+</div>
+        <div class="stat-label">Projects Delivered</div>
       </div>
-      <a href="tel:+17185550193" class="btn btn-primary" style="display:block; text-align:center; margin-bottom:14px;">
-        📞 Call (718) 555-0193
-      </a>
-      <a href="#" class="btn btn-outline" style="display:block; text-align:center;">
-        Book Online
-      </a>
-      <p style="margin-top:20px; font-size:13px; color:#444;">
-        📍 247 Atlantic Ave, Brooklyn, NY 11201
-      </p>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Custom Code</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Ideas Available</div>
+      </div>
     </div>
+  </div>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="section-label" style="justify-content: center;">Contact</div>
+    <h2>LET'S<br/><span>WORK</span><br/>TOGETHER</h2>
+    <p>Have a project in mind? I'd love to hear about it. Send me a message and let's create something great.</p>
+    <a href="mailto:hello@carimoadulture.com" class="contact-email">hello@carimoadulture.com</a>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-logo">✂ Tony's Barbershop</div>
-    <ul class="footer-links">
-      <li><a href="#services">Services</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#testimonials">Reviews</a></li>
-      <li><a href="#booking">Book</a></li>
-    </ul>
-    <p>© 2024 Tony's Barbershop · Brooklyn, NY · All rights reserved</p>
-    <p style="margin-top:8px; color:#333;">Website by YourName · Available for hire on Fiverr</p>
+    <p>© 2026 CARIMOADULTURE — ALL RIGHTS RESERVED</p>
+    <div class="footer-links">
+      <a href="https://github.com/carimoadulture" target="_blank">GitHub</a>
+      <a href="#projects">Work</a>
+      <a href="#contact">Contact</a>
+    </div>
   </footer>
 
-</body>
-</html>
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    let mouseX = 0, mouseY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.left = mouseX - 6 + 'px';
+      cursor.
